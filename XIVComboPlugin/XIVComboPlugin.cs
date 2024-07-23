@@ -9,6 +9,7 @@ using Dalamud.Utility;
 using Dalamud.IoC;
 using Dalamud.Plugin.Services;
 using Dalamud.Interface.Utility;
+using XIVCombo.Configuration.Melee;
 
 namespace XIVComboPlugin
 {
@@ -29,7 +30,7 @@ namespace XIVComboPlugin
         public XIVComboConfiguration Configuration;
 
         private IconReplacer iconReplacer;
-        private CustomComboPreset[] orderedByClassJob;
+        private VPRCombos[] VPRComboPresets;
 
         public XIVComboPlugin()
         {
@@ -53,8 +54,10 @@ namespace XIVComboPlugin
             PluginInterface.UiBuilder.OpenMainUi += () => isImguiComboSetupOpen = true;
             PluginInterface.UiBuilder.Draw += UiBuilder_OnBuildUi;
 
-            var values = Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>();
-            orderedByClassJob = values.Where(x => x != CustomComboPreset.None && x.GetAttribute<CustomComboInfoAttribute>() != null).OrderBy(x => x.GetAttribute<CustomComboInfoAttribute>().ClassJob).ToArray();
+            var values = Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>();
+            VPRComboPresets = values.Where(x => x != VPRCombos.None && x.GetAttribute<CustomComboInfoAttribute>() != null)
+                .OrderBy(x => x.GetAttribute<CustomComboInfoAttribute>().ClassJob)
+                .ToArray();
             UpdateConfig();
         }
 
@@ -120,10 +123,10 @@ namespace XIVComboPlugin
 
             if (!isImguiComboSetupOpen)
                 return;
-            var flagsSelected = new bool[orderedByClassJob.Length];
-            for (var i = 0; i < orderedByClassJob.Length; i++)
+            var flagsSelected = new bool[VPRComboPresets.Length];
+            for (var i = 0; i < VPRComboPresets.Length; i++)
             {
-                flagsSelected[i] = Configuration.ComboPresets.HasFlag(orderedByClassJob[i]);
+                flagsSelected[i] = Configuration.VPRCombos.HasFlag(VPRComboPresets[i]);
             }
 
             ImGui.SetNextWindowSize(new Vector2(750, (30 + ImGui.GetStyle().ItemSpacing.Y) * 17));
@@ -139,18 +142,18 @@ namespace XIVComboPlugin
 
             var lastClassJob = 0;
 
-            for (var i = 0; i < orderedByClassJob.Length; i++)
+            for (var i = 0; i < VPRComboPresets.Length; i++)
             {
-                var flag = orderedByClassJob[i];
+                var flag = VPRComboPresets[i];
                 var flagInfo = flag.GetAttribute<CustomComboInfoAttribute>();
                 if (lastClassJob != flagInfo.ClassJob)
                 {
                     lastClassJob = flagInfo.ClassJob;
                     if (ImGui.CollapsingHeader(ClassJobToName((byte)lastClassJob)))
                     {
-                        for (int j = i; j < orderedByClassJob.Length; j++)
+                        for (int j = i; j < VPRComboPresets.Length; j++)
                         {
-                            flag = orderedByClassJob[j];
+                            flag = VPRComboPresets[j];
                             flagInfo = flag.GetAttribute<CustomComboInfoAttribute>();
                             if (lastClassJob != flagInfo.ClassJob)
                             {
@@ -168,15 +171,15 @@ namespace XIVComboPlugin
                 }
             }
 
-            for (var i = 0; i < orderedByClassJob.Length; i++)
+            for (var i = 0; i < VPRComboPresets.Length; i++)
             {
                 if (flagsSelected[i])
                 {
-                    Configuration.ComboPresets |= orderedByClassJob[i];
+                    Configuration.VPRCombos |= VPRComboPresets[i];
                 }
                 else
                 {
-                    Configuration.ComboPresets &= ~orderedByClassJob[i];
+                    Configuration.VPRCombos &= ~VPRComboPresets[i];
                 }
             }
 
@@ -218,12 +221,12 @@ namespace XIVComboPlugin
             {
                 case "setall":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>())
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
                         {
-                            if (value == CustomComboPreset.None)
+                            if (value == XIVCombo.Configuration.Melee.VPRCombos.None)
                                 continue;
 
-                            this.Configuration.ComboPresets |= value;
+                            this.Configuration.VPRCombos |= value;
                         }
 
                         ChatGui.Print("all SET");
@@ -231,9 +234,9 @@ namespace XIVComboPlugin
                     break;
                 case "unsetall":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>())
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
                         {
-                            this.Configuration.ComboPresets &= value;
+                            this.Configuration.VPRCombos &= value;
                         }
 
                         ChatGui.Print("all UNSET");
@@ -241,46 +244,46 @@ namespace XIVComboPlugin
                     break;
                 case "set":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>())
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
 
-                            this.Configuration.ComboPresets |= value;
+                            this.Configuration.VPRCombos |= value;
                         }
                     }
                     break;
                 case "toggle":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>())
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
 
-                            this.Configuration.ComboPresets ^= value;
+                            this.Configuration.VPRCombos ^= value;
                         }
                     }
                     break;
 
                 case "unset":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>())
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
 
-                            this.Configuration.ComboPresets &= ~value;
+                            this.Configuration.VPRCombos &= ~value;
                         }
                     }
                     break;
 
                 case "list":
                     {
-                        foreach (var value in Enum.GetValues(typeof(CustomComboPreset)).Cast<CustomComboPreset>().Where(x => x != CustomComboPreset.None))
+                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>().Where(x => x != XIVCombo.Configuration.Melee.VPRCombos.None))
                         {
                             if (argumentsParts[1].ToLower() == "set")
                             {
-                                if (this.Configuration.ComboPresets.HasFlag(value))
+                                if (this.Configuration.VPRCombos.HasFlag(value))
                                     ChatGui.Print(value.ToString());
                             }
                             else if (argumentsParts[1].ToLower() == "all")
