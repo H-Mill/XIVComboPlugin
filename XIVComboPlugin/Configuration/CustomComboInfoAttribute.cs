@@ -1,8 +1,4 @@
 ﻿using System;
-using XIVCombo.Configuration.Healers;
-using XIVCombo.Configuration.Melee;
-using XIVCombo.Configuration.Ranged;
-using XIVCombo.Configuration.Tanks;
 
 namespace XIVComboPlugin
 {

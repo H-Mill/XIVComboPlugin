@@ -9,7 +9,7 @@ using Dalamud.Utility;
 using Dalamud.IoC;
 using Dalamud.Plugin.Services;
 using Dalamud.Interface.Utility;
-using XIVCombo.Configuration.Melee;
+using XIVCombo.Jobs.Melee;
 
 namespace XIVComboPlugin
 {
@@ -30,7 +30,7 @@ namespace XIVComboPlugin
         public XIVComboConfiguration Configuration;
 
         private IconReplacer iconReplacer;
-        private VPRCombos[] VPRComboPresets;
+        private VPR.Combos[] VPRComboPresets;
 
         public XIVComboPlugin()
         {
@@ -54,8 +54,8 @@ namespace XIVComboPlugin
             PluginInterface.UiBuilder.OpenMainUi += () => isImguiComboSetupOpen = true;
             PluginInterface.UiBuilder.Draw += UiBuilder_OnBuildUi;
 
-            var values = Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>();
-            VPRComboPresets = values.Where(x => x != VPRCombos.None && x.GetAttribute<CustomComboInfoAttribute>() != null)
+            var values = Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>();
+            VPRComboPresets = values.Where(x => x != VPR.Combos.None && x.GetAttribute<CustomComboInfoAttribute>() != null)
                 .OrderBy(x => x.GetAttribute<CustomComboInfoAttribute>().ClassJob)
                 .ToArray();
             UpdateConfig();
@@ -221,9 +221,9 @@ namespace XIVComboPlugin
             {
                 case "setall":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>())
                         {
-                            if (value == XIVCombo.Configuration.Melee.VPRCombos.None)
+                            if (value == VPR.Combos.None)
                                 continue;
 
                             this.Configuration.VPRCombos |= value;
@@ -234,7 +234,7 @@ namespace XIVComboPlugin
                     break;
                 case "unsetall":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>())
                         {
                             this.Configuration.VPRCombos &= value;
                         }
@@ -244,7 +244,7 @@ namespace XIVComboPlugin
                     break;
                 case "set":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
@@ -255,7 +255,7 @@ namespace XIVComboPlugin
                     break;
                 case "toggle":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
@@ -267,7 +267,7 @@ namespace XIVComboPlugin
 
                 case "unset":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>())
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>())
                         {
                             if (value.ToString().ToLower() != argumentsParts[1].ToLower())
                                 continue;
@@ -279,7 +279,7 @@ namespace XIVComboPlugin
 
                 case "list":
                     {
-                        foreach (var value in Enum.GetValues(typeof(VPRCombos)).Cast<VPRCombos>().Where(x => x != XIVCombo.Configuration.Melee.VPRCombos.None))
+                        foreach (var value in Enum.GetValues(typeof(VPR.Combos)).Cast<VPR.Combos>().Where(x => x != VPR.Combos.None))
                         {
                             if (argumentsParts[1].ToLower() == "set")
                             {

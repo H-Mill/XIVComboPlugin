@@ -2,16 +2,14 @@
 using System.Runtime.InteropServices;
 using Dalamud.Game;
 using Dalamud.Hooking;
-using XIVComboPlugin.JobActions;
 using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Gauge;
-using XIVCombo.Configuration.Melee;
-using XIVCombo.Configuration.Tanks;
-using XIVCombo.Configuration.Ranged;
-using XIVCombo.Configuration.Healers;
+using XIVCombo.Jobs.Tank;
+using XIVCombo.Jobs.Heal;
+using XIVCombo.Jobs.Melee;
+using XIVCombo.Jobs.Range;
 
 namespace XIVComboPlugin
 {
@@ -121,7 +119,7 @@ namespace XIVComboPlugin
             // DRAGOON
 
             // Replace Coerthan Torment with Coerthan Torment combo chain
-            if (Configuration.DRGCombos.HasFlag(DRGCombos.DragoonCoerthanTormentCombo))
+            if (Configuration.DRGCombos.HasFlag(DRG.Combos.DragoonCoerthanTormentCombo))
                 if (actionID == DRG.CTorment)
                 {
                     if ((lastMove == DRG.DoomSpike || lastMove == DRG.DraconianFury) && level >= 62)
@@ -132,7 +130,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Chaos Thrust with the Chaos Thrust combo chain
-            if (Configuration.DRGCombos.HasFlag(DRGCombos.DragoonChaosThrustCombo))
+            if (Configuration.DRGCombos.HasFlag(DRG.Combos.DragoonChaosThrustCombo))
                 if (actionID == DRG.ChaosThrust || actionID == DRG.ChaoticSpring)
                 {
                     if ((lastMove == DRG.TrueThrust || lastMove == DRG.RaidenThrust) && level >= 18)
@@ -147,7 +145,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Full Thrust with the Full Thrust combo chain
-            if (Configuration.DRGCombos.HasFlag(DRGCombos.DragoonFullThrustCombo))
+            if (Configuration.DRGCombos.HasFlag(DRG.Combos.DragoonFullThrustCombo))
                 if (actionID == DRG.FullThrust || actionID == DRG.HeavensThrust)
                 {
                     if ((lastMove == DRG.TrueThrust || lastMove == DRG.RaidenThrust) && level >= 4)
@@ -164,7 +162,7 @@ namespace XIVComboPlugin
             // DARK KNIGHT
 
             // Replace Souleater with Souleater combo chain
-            if (Configuration.DRKCombos.HasFlag(DRKCombos.DarkSouleaterCombo))
+            if (Configuration.DRKCombos.HasFlag(DRK.Combos.DarkSouleaterCombo))
                 if (actionID == DRK.Souleater)
                 {
                     if (lastMove == DRK.HardSlash && level >= 2)
@@ -175,7 +173,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Stalwart Soul with Stalwart Soul combo chain
-            if (Configuration.DRKCombos.HasFlag(DRKCombos.DarkStalwartSoulCombo))
+            if (Configuration.DRKCombos.HasFlag(DRK.Combos.DarkStalwartSoulCombo))
                 if (actionID == DRK.StalwartSoul)
                 {
                     if (lastMove == DRK.Unleash && level >= 40)
@@ -186,7 +184,7 @@ namespace XIVComboPlugin
             // PALADIN
 
             // Replace Royal Authority with Royal Authority combo
-            if (Configuration.PLDCombos.HasFlag(PLDCombos.PaladinRoyalAuthorityCombo))
+            if (Configuration.PLDCombos.HasFlag(PLD.Combos.PaladinRoyalAuthorityCombo))
                 if (actionID == PLD.RoyalAuthority || actionID == PLD.RageOfHalone)
                 {
                     if (lastMove == PLD.FastBlade && level >= 4)
@@ -197,7 +195,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Prominence with Prominence combo
-            if (Configuration.PLDCombos.HasFlag(PLDCombos.PaladinProminenceCombo))
+            if (Configuration.PLDCombos.HasFlag(PLD.Combos.PaladinProminenceCombo))
                 if (actionID == PLD.Prominence)
                 {
                     if (lastMove == PLD.TotalEclipse && level >= 40)
@@ -206,7 +204,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Requiescat/Imperator with Confiteor when under the effect of Requiescat
-            if (Configuration.PLDCombos.HasFlag(PLDCombos.PaladinRequiescatCombo))
+            if (Configuration.PLDCombos.HasFlag(PLD.Combos.PaladinRequiescatCombo))
                 if (actionID == PLD.Requiescat || actionID == PLD.Imperator)
                 {
                     if (SearchBuffArray(PLD.BuffRequiescat) && level >= 80)
@@ -217,7 +215,7 @@ namespace XIVComboPlugin
             // WARRIOR
 
             // Replace Storm's Path with Storm's Path combo
-            if (Configuration.WARCombos.HasFlag(WARCombos.WarriorStormsPathCombo))
+            if (Configuration.WARCombos.HasFlag(WAR.Combos.WarriorStormsPathCombo))
                 if (actionID == WAR.StormsPath)
                 {
                     if (lastMove == WAR.HeavySwing && level >= 4)
@@ -228,7 +226,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Storm's Eye with Storm's Eye combo
-            if (Configuration.WARCombos.HasFlag(WARCombos.WarriorStormsEyeCombo))
+            if (Configuration.WARCombos.HasFlag(WAR.Combos.WarriorStormsEyeCombo))
                 if (actionID == WAR.StormsEye)
                 {
                     if (lastMove == WAR.HeavySwing && level >= 4)
@@ -239,7 +237,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Mythril Tempest with Mythril Tempest combo
-            if (Configuration.WARCombos.HasFlag(WARCombos.WarriorMythrilTempestCombo))
+            if (Configuration.WARCombos.HasFlag(WAR.Combos.WarriorMythrilTempestCombo))
                 if (actionID == WAR.MythrilTempest)
                 {
                     if (lastMove == WAR.Overpower && level >= 40)
@@ -249,7 +247,7 @@ namespace XIVComboPlugin
 
             // SAMURAI
 
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiTsubameCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiTsubameCombo))
                 if (actionID == SAM.Iaijutsu)
                 {
                     var gauge = JobGauges.Get<SAMGauge>();
@@ -259,7 +257,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Yukikaze with Yukikaze combo
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiYukikazeCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiYukikazeCombo))
                 if (actionID == SAM.Yukikaze)
                 {
                     if (SearchBuffArray(SAM.BuffMeikyoShisui))
@@ -270,7 +268,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Gekko with Gekko combo
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiGekkoCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiGekkoCombo))
                 if (actionID == SAM.Gekko)
                 {
                     if (SearchBuffArray(SAM.BuffMeikyoShisui))
@@ -283,7 +281,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Kasha with Kasha combo
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiKashaCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiKashaCombo))
                 if (actionID == SAM.Kasha)
                 {
                     if (SearchBuffArray(SAM.BuffMeikyoShisui))
@@ -296,7 +294,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Mangetsu with Mangetsu combo
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiMangetsuCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiMangetsuCombo))
                 if (actionID == SAM.Mangetsu)
                 {
                     if (SearchBuffArray(SAM.BuffMeikyoShisui))
@@ -307,7 +305,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Oka with Oka combo
-            if (Configuration.SAMCombos.HasFlag(SAMCombos.SamuraiOkaCombo))
+            if (Configuration.SAMCombos.HasFlag(SAM.Combos.SamuraiOkaCombo))
                 if (actionID == SAM.Oka)
                 {
                     if (SearchBuffArray(SAM.BuffMeikyoShisui))
@@ -320,7 +318,7 @@ namespace XIVComboPlugin
             // NINJA
 
             // Replace Armor Crush with Armor Crush combo
-            if (Configuration.NINCombos.HasFlag(NINCombos.NinjaArmorCrushCombo))
+            if (Configuration.NINCombos.HasFlag(NIN.Combos.NinjaArmorCrushCombo))
                 if (actionID == NIN.ArmorCrush)
                 {
                     if (lastMove == NIN.SpinningEdge && level >= 4)
@@ -331,7 +329,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Aeolian Edge with Aeolian Edge combo
-            if (Configuration.NINCombos.HasFlag(NINCombos.NinjaAeolianEdgeCombo))
+            if (Configuration.NINCombos.HasFlag(NIN.Combos.NinjaAeolianEdgeCombo))
                 if (actionID == NIN.AeolianEdge)
                 {
                     if (lastMove == NIN.SpinningEdge && level >= 4)
@@ -342,7 +340,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Hakke Mujinsatsu with Hakke Mujinsatsu combo
-            if (Configuration.NINCombos.HasFlag(NINCombos.NinjaHakkeMujinsatsuCombo))
+            if (Configuration.NINCombos.HasFlag(NIN.Combos.NinjaHakkeMujinsatsuCombo))
                 if (actionID == NIN.HakkeM)
                 {
                     if (lastMove == NIN.DeathBlossom && level >= 52)
@@ -353,7 +351,7 @@ namespace XIVComboPlugin
             // GUNBREAKER
 
             // Replace Solid Barrel with Solid Barrel combo
-            if (Configuration.GNBCombos.HasFlag(GNBCombos.GunbreakerSolidBarrelCombo))
+            if (Configuration.GNBCombos.HasFlag(GNB.Combos.GunbreakerSolidBarrelCombo))
                 if (actionID == GNB.SolidBarrel)
                 {
                     if (lastMove == GNB.KeenEdge && level >= 4)
@@ -364,7 +362,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Wicked Talon with Gnashing Fang combo
-            if (Configuration.GNBCombos.HasFlag(GNBCombos.GunbreakerGnashingFangCont))
+            if (Configuration.GNBCombos.HasFlag(GNB.Combos.GunbreakerGnashingFangCont))
                 if (actionID == GNB.GnashingFang)
                 {
                     if (level >= GNB.LevelContinuation)
@@ -380,7 +378,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Burst Strike with Continuation
-            if (Configuration.GNBCombos.HasFlag(GNBCombos.GunbreakerBurstStrikeCont))
+            if (Configuration.GNBCombos.HasFlag(GNB.Combos.GunbreakerBurstStrikeCont))
                 if (actionID == GNB.BurstStrike)
                 {
                     if (level >= GNB.LevelEnhancedContinuation)
@@ -390,7 +388,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Demon Slaughter with Demon Slaughter combo
-            if (Configuration.GNBCombos.HasFlag(GNBCombos.GunbreakerDemonSlaughterCombo))
+            if (Configuration.GNBCombos.HasFlag(GNB.Combos.GunbreakerDemonSlaughterCombo))
                 if (actionID == GNB.DemonSlaughter)
                 {
                     if (lastMove == GNB.DemonSlice && level >= 40)
@@ -399,7 +397,7 @@ namespace XIVComboPlugin
                 }
             
             // Replace Fated Brand with Continuation
-            if (Configuration.GNBCombos.HasFlag(GNBCombos.GunbreakerFatedCircleCont))
+            if (Configuration.GNBCombos.HasFlag(GNB.Combos.GunbreakerFatedCircleCont))
                 if (actionID == GNB.FatedCircle)
                 {
                     if (level >= GNB.LevelEnhancedContinuation2)
@@ -412,7 +410,7 @@ namespace XIVComboPlugin
 
             // Replace Clean Shot with Heated Clean Shot combo
             // Or with Heat Blast when overheated.
-            if (Configuration.MCHCombos.HasFlag(MCHCombos.MachinistMainCombo))
+            if (Configuration.MCHCombos.HasFlag(MCH.Combos.MachinistMainCombo))
                 if (actionID == MCH.CleanShot || actionID == MCH.HeatedCleanShot)
                 {
                     if (lastMove == MCH.SplitShot && level >= 2)
@@ -424,7 +422,7 @@ namespace XIVComboPlugin
 
 
             // Replace Hypercharge with Heat Blast when overheated
-            if (Configuration.MCHCombos.HasFlag(MCHCombos.MachinistOverheatFeature))
+            if (Configuration.MCHCombos.HasFlag(MCH.Combos.MachinistOverheatFeature))
                 if (actionID == MCH.Hypercharge)
                 {
                     var gauge = JobGauges.Get<MCHGauge>();
@@ -434,7 +432,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Spread Shot with Auto Crossbow when overheated.
-            if (Configuration.MCHCombos.HasFlag(MCHCombos.MachinistSpreadShotFeature))
+            if (Configuration.MCHCombos.HasFlag(MCH.Combos.MachinistSpreadShotFeature))
                 if (actionID == MCH.SpreadShot || actionID == MCH.Scattergun)
                 {
                     if (JobGauges.Get<MCHGauge>().IsOverheated && level >= 52)
@@ -445,7 +443,7 @@ namespace XIVComboPlugin
             // BLACK MAGE
 
             // B4 and F4 change to each other depending on stance, as do Flare and Freeze.
-            if (Configuration.BLMCombos.HasFlag(BLMCombos.BlackEnochianFeature))
+            if (Configuration.BLMCombos.HasFlag(BLM.Combos.BlackEnochianFeature))
             {
                 if (actionID == BLM.Fire4 || actionID == BLM.Blizzard4)
                 {
@@ -467,7 +465,7 @@ namespace XIVComboPlugin
 
             // ASTROLOGIAN
             // Change Play 1/2/3 to Astral/Umbral Draw if that Play action doesn't have a card ready to be played.
-            if (Configuration.ASTCombos.HasFlag(ASTCombos.AstrologianCardsOnDrawFeature))
+            if (Configuration.ASTCombos.HasFlag(AST.Combos.AstrologianCardsOnDrawFeature))
             {
                 if (actionID == AST.Play1 || actionID == AST.Play2 || actionID == AST.Play3)
                 {
@@ -480,7 +478,7 @@ namespace XIVComboPlugin
 
             // SUMMONER
             // Change Fester/Necrotize into Energy Drain
-            if (Configuration.SMNCombos.HasFlag(SMNCombos.SummonerEDFesterCombo))
+            if (Configuration.SMNCombos.HasFlag(SMN.Combos.SummonerEDFesterCombo))
                 if (actionID == SMN.Fester || actionID == SMN.Necrotize)
                 {
                     if (!JobGauges.Get<SMNGauge>().HasAetherflowStacks)
@@ -489,7 +487,7 @@ namespace XIVComboPlugin
                 }
 
             //Change Painflare into Energy Syphon
-            if (Configuration.SMNCombos.HasFlag(SMNCombos.SummonerESPainflareCombo))
+            if (Configuration.SMNCombos.HasFlag(SMN.Combos.SummonerESPainflareCombo))
                 if (actionID == SMN.Painflare)
                 {
                     if (!JobGauges.Get<SMNGauge>().HasAetherflowStacks)
@@ -498,7 +496,7 @@ namespace XIVComboPlugin
                 }
             
             //Change Summon Solar Bahamut into Lux Solaris
-            if(Configuration.SMNCombos.HasFlag(SMNCombos.SummonerSolarBahamutLuxSolaris))
+            if(Configuration.SMNCombos.HasFlag(SMN.Combos.SummonerSolarBahamutLuxSolaris))
                 if (actionID == SMN.SummonBahamut)
                 {
                     if(SearchBuffArray(SMN.Buffs.RefulgentLux))
@@ -509,7 +507,7 @@ namespace XIVComboPlugin
 
             // SCHOLAR
             // Change Energy Drain into Aetherflow when you have no more Aetherflow stacks.
-            if (Configuration.SCHCombos.HasFlag(SCHCombos.ScholarEnergyDrainFeature))
+            if (Configuration.SCHCombos.HasFlag(SCH.Combos.ScholarEnergyDrainFeature))
                 if (actionID == SCH.EnergyDrain)
                 {
                     if (JobGauges.Get<SCHGauge>().Aetherflow == 0) return SCH.Aetherflow;
@@ -521,7 +519,7 @@ namespace XIVComboPlugin
             // AoE GCDs are split into two buttons, because priority matters
             // differently in different single-target moments. Thanks yoship.
             // Replaces each GCD with its procced version.
-            if (Configuration.DNCCombos.HasFlag(DNCCombos.DancerAoeGcdFeature))
+            if (Configuration.DNCCombos.HasFlag(DNC.Combos.DancerAoeGcdFeature))
             {
                 if (actionID == DNC.Bloodshower)
                 {
@@ -539,7 +537,7 @@ namespace XIVComboPlugin
             }
 
             // Fan Dance changes into Fan Dance 3 while flourishing.
-            if (Configuration.DNCCombos.HasFlag(DNCCombos.DancerFanDanceCombo))
+            if (Configuration.DNCCombos.HasFlag(DNC.Combos.DancerFanDanceCombo))
             {
                 if (actionID == DNC.FanDance1)
                 {
@@ -557,7 +555,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.DNCCombos.HasFlag(DNCCombos.DancerFanDance4Combo))
+            if (Configuration.DNCCombos.HasFlag(DNC.Combos.DancerFanDance4Combo))
             {
                 if (actionID == DNC.Flourish)
                 {
@@ -567,7 +565,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.DNCCombos.HasFlag(DNCCombos.DancerDevilmentCombo))
+            if (Configuration.DNCCombos.HasFlag(DNC.Combos.DancerDevilmentCombo))
             {
                 if (actionID == DNC.Devilment)
                 {
@@ -577,7 +575,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.DNCCombos.HasFlag(DNCCombos.DancerLastDanceCombo))
+            if (Configuration.DNCCombos.HasFlag(DNC.Combos.DancerLastDanceCombo))
             {
                 if (actionID == DNC.StandardStep)
                 {
@@ -590,7 +588,7 @@ namespace XIVComboPlugin
             // WHM
 
             // Replace Solace with Misery when full blood lily
-            if (Configuration.WHMCombos.HasFlag(WHMCombos.WhiteMageSolaceMiseryFeature))
+            if (Configuration.WHMCombos.HasFlag(WHM.Combos.WhiteMageSolaceMiseryFeature))
                 if (actionID == WHM.Solace)
                 {
                     if (JobGauges.Get<WHMGauge>().BloodLily == 3)
@@ -599,7 +597,7 @@ namespace XIVComboPlugin
                 }
 
             // Replace Solace with Misery when full blood lily
-            if (Configuration.WHMCombos.HasFlag(WHMCombos.WhiteMageRaptureMiseryFeature))
+            if (Configuration.WHMCombos.HasFlag(WHM.Combos.WhiteMageRaptureMiseryFeature))
                 if (actionID == WHM.Rapture)
                 {
                     if (JobGauges.Get<WHMGauge>().BloodLily == 3)
@@ -610,7 +608,7 @@ namespace XIVComboPlugin
             // BARD
 
             // Replace HS/BS with SS/RA when procced.
-            if (Configuration.BRDCombos.HasFlag(BRDCombos.BardStraightShotUpgradeFeature))
+            if (Configuration.BRDCombos.HasFlag(BRD.Combos.BardStraightShotUpgradeFeature))
                 if (actionID == BRD.HeavyShot || actionID == BRD.BurstShot)
                 {
                     if (SearchBuffArray(BRD.BuffHawksEye) || SearchBuffArray(BRD.BuffBarrage))
@@ -618,7 +616,7 @@ namespace XIVComboPlugin
                     return iconHook.Original(self, BRD.HeavyShot);
                 }
 
-            if (Configuration.BRDCombos.HasFlag(BRDCombos.BardAoEUpgradeFeature))
+            if (Configuration.BRDCombos.HasFlag(BRD.Combos.BardAoEUpgradeFeature))
                 if (actionID == BRD.QuickNock || actionID == BRD.Ladonsbite)
                 {
                     if (SearchBuffArray(BRD.BuffHawksEye) || SearchBuffArray(BRD.BuffBarrage))
@@ -627,7 +625,7 @@ namespace XIVComboPlugin
                 }
 
             // MONK
-            if (Configuration.MNKCombos.HasFlag(MNKCombos.MonkFuryCombo))
+            if (Configuration.MNKCombos.HasFlag(MNK.Combos.MonkFuryCombo))
             {
                 if (actionID == MNK.Bootshine || actionID == MNK.LeapingOpo)
                 {
@@ -651,7 +649,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.MNKCombos.HasFlag(MNKCombos.MonkPerfectBlitz))
+            if (Configuration.MNKCombos.HasFlag(MNK.Combos.MonkPerfectBlitz))
             {
                 if (actionID == MNK.MasterfulBlitz)
                 {
@@ -664,7 +662,7 @@ namespace XIVComboPlugin
             // RED MAGE
 
             // Replace Veraero/thunder 2 with Impact when Dualcast is active
-            if (Configuration.RDMCombos.HasFlag(RDMCombos.RedMageAoECombo))
+            if (Configuration.RDMCombos.HasFlag(RDM.Combos.RedMageAoECombo))
             {
                 if (actionID == RDM.Veraero2)
                 {
@@ -684,7 +682,7 @@ namespace XIVComboPlugin
             }
 
             // Replace Redoublement with Redoublement combo, Enchanted if possible.
-            if (Configuration.RDMCombos.HasFlag(RDMCombos.RedMageMeleeCombo))
+            if (Configuration.RDMCombos.HasFlag(RDM.Combos.RedMageMeleeCombo))
                 if (actionID == RDM.Redoublement)
                 {
                     if ((lastMove == RDM.Riposte) && level >= 35)
@@ -696,7 +694,7 @@ namespace XIVComboPlugin
                     return iconHook.Original(self, RDM.Riposte);
                 }
 
-            if (Configuration.RDMCombos.HasFlag(RDMCombos.RedMageVerprocCombo))
+            if (Configuration.RDMCombos.HasFlag(RDM.Combos.RedMageVerprocCombo))
             {
                 if (actionID == RDM.Verstone)
                 {
@@ -715,7 +713,7 @@ namespace XIVComboPlugin
             }
 
             // REAPER 
-            if (Configuration.RPRCombos.HasFlag(RPRCombos.ReaperSliceCombo))
+            if (Configuration.RPRCombos.HasFlag(RPR.Combos.ReaperSliceCombo))
             {
                 if (actionID == RPR.Slice)
                 {
@@ -729,7 +727,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.RPRCombos.HasFlag(RPRCombos.ReaperScytheCombo))
+            if (Configuration.RPRCombos.HasFlag(RPR.Combos.ReaperScytheCombo))
             {
                 if (actionID == RPR.SpinningScythe)
                 {
@@ -740,7 +738,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.RPRCombos.HasFlag(RPRCombos.ReaperRegressFeature))
+            if (Configuration.RPRCombos.HasFlag(RPR.Combos.ReaperRegressFeature))
             {
                 if (actionID == RPR.Egress || actionID == RPR.Ingress)
                 {
@@ -749,7 +747,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.RPRCombos.HasFlag(RPRCombos.ReaperEnshroudCombo))
+            if (Configuration.RPRCombos.HasFlag(RPR.Combos.ReaperEnshroudCombo))
             {
                 if (actionID == RPR.Enshroud)
                 {
@@ -759,7 +757,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.RPRCombos.HasFlag(RPRCombos.ReaperArcaneFeature))
+            if (Configuration.RPRCombos.HasFlag(RPR.Combos.ReaperArcaneFeature))
             {
                 if (actionID == RPR.ArcaneCircle)
                 {
@@ -771,7 +769,7 @@ namespace XIVComboPlugin
             }
             
              //Pictomancer
-            if (Configuration.PCTCombos.HasFlag(PCTCombos.PictoSubtractivePallet))
+            if (Configuration.PCTCombos.HasFlag(PCT.Combos.PictoSubtractivePallet))
             {
                 if (actionID == PCT.Fire1)
                 {
@@ -788,7 +786,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.PCTCombos.HasFlag(PCTCombos.PictoHolyWhiteCombo))
+            if (Configuration.PCTCombos.HasFlag(PCT.Combos.PictoHolyWhiteCombo))
             {
                 if (actionID == PCT.HolyWhite)
                 {
@@ -798,7 +796,7 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.PCTCombos.HasFlag(PCTCombos.PictoMotifMuseFeature))
+            if (Configuration.PCTCombos.HasFlag(PCT.Combos.PictoMotifMuseFeature))
             {
                 if (actionID == PCT.CreatureMotif)
                 {
@@ -813,7 +811,7 @@ namespace XIVComboPlugin
                     var PCTGauge = JobGauges.Get<PCTGauge>();
                     if (PCTGauge.WeaponMotifDrawn)
                         return iconHook.Original(self, PCT.SteelMuse);
-                    if (Configuration.PCTCombos.HasFlag(PCTCombos.PictoMuseCombo))
+                    if (Configuration.PCTCombos.HasFlag(PCT.Combos.PictoMuseCombo))
                         if (SearchBuffArray(PCT.HammerReady))
                             return iconHook.Original(self, PCT.HammerStamp);
                     return iconHook.Original(self, actionID);
@@ -824,7 +822,7 @@ namespace XIVComboPlugin
                     var PCTGauge = JobGauges.Get<PCTGauge>();
                     if (PCTGauge.LandscapeMotifDrawn)
                         return PCT.StarryMuse;
-                    if (Configuration.PCTCombos.HasFlag(PCTCombos.PictoMuseCombo))
+                    if (Configuration.PCTCombos.HasFlag(PCT.Combos.PictoMuseCombo))
                         if (SearchBuffArray(PCT.StarStruck))
                             return PCT.StarPrism;
                     return PCT.StarryMotif;
@@ -832,47 +830,47 @@ namespace XIVComboPlugin
             }
             
             //VIPER
-            if (Configuration.VPRCombos.HasFlag(VPRCombos.ViperDeathRattleCombo))
+            if (Configuration.VPRCombos.HasFlag(VPR.Combos.ViperDeathRattleCombo))
             {
-                if (actionID == VPR.SteelFangs || actionID == VPR.DreadFangs)
-                    if (iconHook.Original(self, VPR.SerpentsTail) == VPR.DeathRattle)
-                        return VPR.DeathRattle;
+                if (actionID == VPR.AbilityIds.SteelFangs || actionID == VPR.AbilityIds.DreadFangs)
+                    if (iconHook.Original(self, VPR.AbilityIds.SerpentsTail) == VPR.AbilityIds.DeathRattle)
+                        return VPR.AbilityIds.DeathRattle;
             }
 
-            if (Configuration.VPRCombos.HasFlag(VPRCombos.ViperLastLashCombo))
+            if (Configuration.VPRCombos.HasFlag(VPR.Combos.ViperLastLashCombo))
             {
 
-                if (actionID == VPR.DreadMaw || actionID == VPR.SteelMaw)
-                    if (iconHook.Original(self, VPR.SerpentsTail) == VPR.LastLash)
-                        return VPR.LastLash;
+                if (actionID == VPR.AbilityIds.DreadMaw || actionID == VPR.AbilityIds.SteelMaw)
+                    if (iconHook.Original(self, VPR.AbilityIds.SerpentsTail) == VPR.AbilityIds.LastLash)
+                        return VPR.AbilityIds.LastLash;
             }
 
-            if (Configuration.VPRCombos.HasFlag(VPRCombos.ViperLegacyCombo))
+            if (Configuration.VPRCombos.HasFlag(VPR.Combos.ViperLegacyCombo))
             {
                 switch (actionID)
                 {
-                    case VPR.SteelFangs:
-                    case VPR.SteelMaw:
-                        if (lastMove == VPR.FirstGeneration)
-                            return VPR.FirstLegacy;
+                    case VPR.AbilityIds.SteelFangs:
+                    case VPR.AbilityIds.SteelMaw:
+                        if (lastMove == VPR.AbilityIds.FirstGeneration)
+                            return VPR.AbilityIds.FirstLegacy;
                         return iconHook.Original(self, actionID);
 
-                    case VPR.DreadFangs:
-                    case VPR.DreadMaw:
-                        if (lastMove == VPR.SecondGeneration)
-                            return VPR.SecondLegacy;
+                    case VPR.AbilityIds.DreadFangs:
+                    case VPR.AbilityIds.DreadMaw:
+                        if (lastMove == VPR.AbilityIds.SecondGeneration)
+                            return VPR.AbilityIds.SecondLegacy;
                         return iconHook.Original(self, actionID);
 
-                    case VPR.HuntersCoil:
-                    case VPR.HuntersDen:
-                        if (lastMove == VPR.ThirdGeneration)
-                            return VPR.ThirdLegacy;
+                    case VPR.AbilityIds.HuntersCoil:
+                    case VPR.AbilityIds.HuntersDen:
+                        if (lastMove == VPR.AbilityIds.ThirdGeneration)
+                            return VPR.AbilityIds.ThirdLegacy;
                         return iconHook.Original(self, actionID);
 
-                    case VPR.SwiftskinsCoil:
-                    case VPR.SwiftskinsDen:
-                        if (lastMove == VPR.FourthGeneration)
-                            return VPR.FourthLegacy;
+                    case VPR.AbilityIds.SwiftskinsCoil:
+                    case VPR.AbilityIds.SwiftskinsDen:
+                        if (lastMove == VPR.AbilityIds.FourthGeneration)
+                            return VPR.AbilityIds.FourthLegacy;
                         return iconHook.Original(self, actionID);
                 }
             }

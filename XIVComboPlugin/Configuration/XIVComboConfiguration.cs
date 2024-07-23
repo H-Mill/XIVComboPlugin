@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dalamud.Configuration;
-using XIVCombo.Configuration.Healers;
-using XIVCombo.Configuration.Melee;
-using XIVCombo.Configuration.Ranged;
-using XIVCombo.Configuration.Tanks;
+using XIVCombo.Jobs.Heal;
+using XIVCombo.Jobs.Melee;
+using XIVCombo.Jobs.Range;
+using XIVCombo.Jobs.Tank;
 
 namespace XIVComboPlugin
 {
@@ -12,32 +12,32 @@ namespace XIVComboPlugin
     public class XIVComboConfiguration : IPluginConfiguration
     {
         //Healers
-        public ASTCombos ASTCombos { get; set; }
-        public SCHCombos SCHCombos { get; set; }
-        public WHMCombos WHMCombos { get; set; }
-
+        public AST.Combos ASTCombos { get; set; }
+        public SCH.Combos SCHCombos { get; set; }
+        public WHM.Combos WHMCombos { get; set; }
+        
         //Melee
-        public DRGCombos DRGCombos { get; set; }
-        public MNKCombos MNKCombos { get; set; }
-        public NINCombos NINCombos { get; set; }
-        public RPRCombos RPRCombos { get; set; }
-        public SAMCombos SAMCombos { get; set; }
-        public VPRCombos VPRCombos { get; set; }
+        public DRG.Combos DRGCombos { get; set; }
+        public MNK.Combos MNKCombos { get; set; }
+        public NIN.Combos NINCombos { get; set; }
+        public RPR.Combos RPRCombos { get; set; }
+        public SAM.Combos SAMCombos { get; set; }
+        public VPR.Combos VPRCombos { get; set; }
 
         //Ranged
-        public BLMCombos BLMCombos { get; set; }
-        public BRDCombos BRDCombos { get; set; }
-        public DNCCombos DNCCombos { get; set; }
-        public MCHCombos MCHCombos { get; set; }
-        public PCTCombos PCTCombos { get; set; }
-        public RDMCombos RDMCombos { get; set; }
-        public SMNCombos SMNCombos { get; set; }
+        public BLM.Combos BLMCombos { get; set; }
+        public BRD.Combos BRDCombos { get; set; }
+        public DNC.Combos DNCCombos { get; set; }
+        public MCH.Combos MCHCombos { get; set; }
+        public PCT.Combos PCTCombos { get; set; }
+        public RDM.Combos RDMCombos { get; set; }
+        public SMN.Combos SMNCombos { get; set; }
 
         //Tanks
-        public DRKCombos DRKCombos { get; set; }
-        public GNBCombos GNBCombos { get; set; }
-        public PLDCombos PLDCombos { get; set; }
-        public WARCombos WARCombos { get; set; }
+        public DRK.Combos DRKCombos { get; set; }
+        public GNB.Combos GNBCombos { get; set; }
+        public PLD.Combos PLDCombos { get; set; }
+        public WAR.Combos WARCombos { get; set; }
 
         public int Version { get; set; }
 
