@@ -208,6 +208,12 @@ namespace XIVComboPlugin
         
         [CustomComboInfo("Generational Legacy", "Legacy moves replace Generation moves when usable", 41)]
         ViperLegacyCombo = 1L << 51,
+
+        [CustomComboInfo("Uncoiled Fury Combo", "Progress through Uncoiled Fury combo automatically", 41)]
+        UncoiledFuryCombo = 1L << 93,
+
+        [CustomComboInfo("Coil/Den Combos", "Progress through Hunter's Coil/Den combo automatically", 41)]
+        CoilDenCombos = 1L << 105,
     }
 
     public class CustomComboInfoAttribute : Attribute

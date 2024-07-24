@@ -826,7 +826,7 @@ namespace XIVComboPlugin
                     return PCT.StarryMotif;
                 }
             }
-            
+
             //VIPER
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.ViperDeathRattleCombo))
             {
@@ -845,31 +845,73 @@ namespace XIVComboPlugin
 
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.ViperLegacyCombo))
             {
-                switch (actionID)
+                if (SearchBuffArray(VPR.Buffs.Reawakened)
+                    && (actionID == VPR.Reawaken
+                     || actionID == VPR.SteelFangs
+                     || actionID == VPR.DreadFangs
+                     || actionID == VPR.HuntersCoil
+                     || actionID == VPR.SwiftskinsCoil))
                 {
-                    case VPR.SteelFangs:
-                    case VPR.SteelMaw:
-                        if (lastMove == VPR.FirstGeneration)
-                            return VPR.FirstLegacy;
-                        return iconHook.Original(self, actionID);
+                    var gauge = JobGauges.Get<VPRGauge>();
+                    if (level >= VPR.Levels.Legacies)
+                    {
+                        if (iconHook.Original(self, VPR.SerpentsTail) == VPR.FirstLegacy ||
+                            iconHook.Original(self, VPR.SerpentsTail) == VPR.SecondLegacy ||
+                            iconHook.Original(self, VPR.SerpentsTail) == VPR.ThirdLegacy ||
+                            iconHook.Original(self, VPR.SerpentsTail) == VPR.FourthLegacy)
+                            return iconHook.Original(self, VPR.SerpentsTail);
+                    }
+                    var maxTribute = level >= VPR.Levels.Ouroboros ? 5 : 4;
+                    if (gauge.AnguineTribute == maxTribute)
+                        return VPR.FirstGeneration;
+                    if (gauge.AnguineTribute == maxTribute - 1)
+                        return VPR.SecondGeneration;
+                    if (gauge.AnguineTribute == maxTribute - 2)
+                        return VPR.ThirdGeneration;
+                    if (gauge.AnguineTribute == maxTribute - 3)
+                        return VPR.FourthGeneration;
+                    if (gauge.AnguineTribute == 1 && level >= VPR.Levels.Ouroboros)
+                        return VPR.Ouroboros;
+                }
+            }
 
-                    case VPR.DreadFangs:
-                    case VPR.DreadMaw:
-                        if (lastMove == VPR.SecondGeneration)
-                            return VPR.SecondLegacy;
-                        return iconHook.Original(self, actionID);
+            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.UncoiledFuryCombo))
+            {
+                var gauge = JobGauges.Get<VPRGauge>();
+                if (actionID == VPR.WrithingSnap)
+                {
+                    if (level >= VPR.Levels.UncoiledTwins)
+                    {
+                        if (SearchBuffArray(VPR.Buffs.PoisedForTwinfang))
+                            return VPR.UncoiledTwinfang;
 
-                    case VPR.HuntersCoil:
-                    case VPR.HuntersDen:
-                        if (lastMove == VPR.ThirdGeneration)
-                            return VPR.ThirdLegacy;
-                        return iconHook.Original(self, actionID);
+                        if (SearchBuffArray(VPR.Buffs.PoisedForTwinblood))
+                            return VPR.UncoiledTwinblood;
+                    }
 
-                    case VPR.SwiftskinsCoil:
-                    case VPR.SwiftskinsDen:
-                        if (lastMove == VPR.FourthGeneration)
-                            return VPR.FourthLegacy;
-                        return iconHook.Original(self, actionID);
+                    if (level >= VPR.Levels.UncoiledFury && gauge.RattlingCoilStacks > 0)
+                    {
+                        return VPR.UncoiledFury;
+                    }
+                }
+            }
+
+            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.CoilDenCombos))
+            {
+                if (level >= VPR.Levels.TwinsSingle && actionID == VPR.HuntersCoil || actionID == VPR.SwiftskinsCoil)
+                {
+                    if (SearchBuffArray(VPR.Buffs.HuntersVenom))
+                        return VPR.TwinfangBite;
+                    if (SearchBuffArray(VPR.Buffs.SwiftskinsVenom))
+                        return VPR.TwinbloodBite;
+                }
+
+                if (level >= VPR.Levels.TwinsAoE && actionID == VPR.HuntersDen || actionID == VPR.SwiftskinsDen)
+                {
+                    if (SearchBuffArray(VPR.Buffs.FellhuntersVenom))
+                        return VPR.TwinfangThresh;
+                    if (SearchBuffArray(VPR.Buffs.FellskinsVenom))
+                        return VPR.TwinbloodThresh;
                 }
             }
 
