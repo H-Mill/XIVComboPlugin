@@ -8,6 +8,7 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Gauge;
+using SerpentCombo = Dalamud.Game.ClientState.JobGauge.Enums.SerpentCombo;
 
 namespace XIVComboPlugin
 {
@@ -133,7 +134,7 @@ namespace XIVComboPlugin
                 {
                     if ((lastMove == DRG.TrueThrust || lastMove == DRG.RaidenThrust) && level >= 18)
                         return iconHook.Original(self, DRG.Disembowel);
-                    if (lastMove == DRG.Disembowel && level >= 50)
+                    if ((lastMove == DRG.Disembowel || lastMove == DRG.SpiralBlow) && level >= 50)
                         return iconHook.Original(self, DRG.ChaosThrust);
                     if ((lastMove == DRG.ChaosThrust || lastMove == DRG.ChaoticSpring) && level >= 58)
                         return DRG.WheelingThrust;
@@ -148,7 +149,7 @@ namespace XIVComboPlugin
                 {
                     if ((lastMove == DRG.TrueThrust || lastMove == DRG.RaidenThrust) && level >= 4)
                         return iconHook.Original(self, DRG.VorpalThrust);
-                    if (lastMove == DRG.VorpalThrust && level >= 26)
+                    if ((lastMove == DRG.VorpalThrust || lastMove == DRG.LanceBarrage) && level >= 26)
                         return iconHook.Original(self, DRG.FullThrust);
                     if ((lastMove == DRG.FullThrust || lastMove == DRG.HeavensThrust) && level >= 56)
                         return DRG.FangAndClaw;
@@ -187,7 +188,7 @@ namespace XIVComboPlugin
                 {
                     if (lastMove == PLD.FastBlade && level >= 4)
                         return PLD.RiotBlade;
-                    if (lastMove == PLD.RiotBlade)
+                    if (lastMove == PLD.RiotBlade && level >= 26)
                         return iconHook.Original(self, PLD.RageOfHalone);
                     return PLD.FastBlade;
                 }
@@ -248,8 +249,10 @@ namespace XIVComboPlugin
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.SamuraiTsubameCombo))
                 if (actionID == SAM.Iaijutsu)
                 {
-                    var gauge = JobGauges.Get<SAMGauge>();
-                    if (gauge.Kaeshi != Kaeshi.NONE && gauge.Kaeshi != Kaeshi.NAMIKIRI)
+                    if (SearchBuffArray(SAM.BuffTsubameReady) ||
+                        SearchBuffArray(SAM.BuffTsubame1) ||
+                        SearchBuffArray(SAM.BuffTsubame2) ||
+                        SearchBuffArray(SAM.BuffTsubame3))
                         return iconHook.Original(self, SAM.Tsubame);
                     return iconHook.Original(self, actionID);
                 }
@@ -794,44 +797,42 @@ namespace XIVComboPlugin
                 }
             }
 
-            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.PictoMotifMuseFeature))
+            bool pictoMuseEnabled = Configuration.ComboPresets.HasFlag(CustomComboPreset.PictoMotifMuseFeature);
+            bool pictoFollowUpEnabled = Configuration.ComboPresets.HasFlag(CustomComboPreset.PictoMuseCombo);
+
+            if (actionID == PCT.CreatureMotif)
             {
-                if (actionID == PCT.CreatureMotif)
-                {
-                    var PCTGauge = JobGauges.Get<PCTGauge>();
-                    if (PCTGauge.CreatureMotifDrawn)
-                        return iconHook.Original(self, PCT.LivingMuse);
-                    return iconHook.Original(self, actionID);
-                }
+                var PCTGauge = JobGauges.Get<PCTGauge>();
+                if (pictoMuseEnabled && PCTGauge.CreatureMotifDrawn)
+                    return iconHook.Original(self, PCT.LivingMuse);
+                return iconHook.Original(self, actionID);
+            }
 
-                if (actionID == PCT.WeaponMotif)
-                {
-                    var PCTGauge = JobGauges.Get<PCTGauge>();
-                    if (PCTGauge.WeaponMotifDrawn)
-                        return iconHook.Original(self, PCT.SteelMuse);
-                    if (Configuration.ComboPresets.HasFlag(CustomComboPreset.PictoMuseCombo))
-                        if (SearchBuffArray(PCT.HammerReady))
-                            return iconHook.Original(self, PCT.HammerStamp);
-                    return iconHook.Original(self, actionID);
-                }
+            if (actionID == PCT.WeaponMotif)
+            {
+                var PCTGauge = JobGauges.Get<PCTGauge>();
+                if (pictoMuseEnabled && PCTGauge.WeaponMotifDrawn)
+                    return iconHook.Original(self, PCT.SteelMuse);
+                if (pictoFollowUpEnabled && SearchBuffArray(PCT.HammerReady))
+                    return iconHook.Original(self, PCT.HammerStamp);
+                return iconHook.Original(self, actionID);
+            }
 
-                if (actionID == PCT.LandscapeMotif)
-                {
-                    var PCTGauge = JobGauges.Get<PCTGauge>();
-                    if (PCTGauge.LandscapeMotifDrawn)
-                        return PCT.StarryMuse;
-                    if (Configuration.ComboPresets.HasFlag(CustomComboPreset.PictoMuseCombo))
-                        if (SearchBuffArray(PCT.StarStruck))
-                            return PCT.StarPrism;
-                    return PCT.StarryMotif;
-                }
+            if (actionID == PCT.LandscapeMotif)
+            {
+                var PCTGauge = JobGauges.Get<PCTGauge>();
+                if (pictoMuseEnabled && PCTGauge.LandscapeMotifDrawn)
+                    return PCT.StarryMuse;
+                if (pictoFollowUpEnabled && SearchBuffArray(PCT.StarStruck))
+                    return PCT.StarPrism;
+                return PCT.StarryMotif;
             }
             
             //VIPER
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.ViperDeathRattleCombo))
             {
                 if (actionID == VPR.SteelFangs || actionID == VPR.DreadFangs)
-                    if (iconHook.Original(self, VPR.SerpentsTail) == VPR.DeathRattle)
+                    if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.DEATHRATTLE)
                         return VPR.DeathRattle;
             }
 
@@ -839,7 +840,7 @@ namespace XIVComboPlugin
             {
 
                 if (actionID == VPR.DreadMaw || actionID == VPR.SteelMaw)
-                    if (iconHook.Original(self, VPR.SerpentsTail) == VPR.LastLash)
+                    if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.LASTLASH)
                         return VPR.LastLash;
             }
 
@@ -849,27 +850,27 @@ namespace XIVComboPlugin
                 {
                     case VPR.SteelFangs:
                     case VPR.SteelMaw:
-                        if (lastMove == VPR.FirstGeneration)
+                        if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.FIRSTLEGACY)
                             return VPR.FirstLegacy;
-                        return iconHook.Original(self, actionID);
+                        break;
 
                     case VPR.DreadFangs:
                     case VPR.DreadMaw:
-                        if (lastMove == VPR.SecondGeneration)
+                        if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.SECONDLEGACY)
                             return VPR.SecondLegacy;
-                        return iconHook.Original(self, actionID);
+                        break;
 
                     case VPR.HuntersCoil:
                     case VPR.HuntersDen:
-                        if (lastMove == VPR.ThirdGeneration)
+                        if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.THIRDLEGACY)
                             return VPR.ThirdLegacy;
-                        return iconHook.Original(self, actionID);
+                        break;
 
                     case VPR.SwiftskinsCoil:
                     case VPR.SwiftskinsDen:
-                        if (lastMove == VPR.FourthGeneration)
+                        if (JobGauges.Get<VPRGauge>().SerpentCombo == SerpentCombo.FOURTHLEGACY)
                             return VPR.FourthLegacy;
-                        return iconHook.Original(self, actionID);
+                        break;
                 }
             }
 
